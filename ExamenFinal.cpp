@@ -55,6 +55,7 @@ void ingresarinv(){
         cin>>prod.stock;
         cout<<"ingresa el stock minimo del producto: ";
         cin>>prod.stockmin;
+        write();
         cout<<"\ndesea seguir ingresando productos (s/n): ";
         cin>>var;
     }while(strcmp(var,"n")!=0);
