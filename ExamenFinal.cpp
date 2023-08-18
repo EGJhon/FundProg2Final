@@ -12,6 +12,7 @@ struct producto{
     int stock;
     int stockmin;
 };
+//comentario extra
 
 //creamos el tipo lista dinamica que contendra id y la cantidad de productos comprados
 typedef struct enlace{
