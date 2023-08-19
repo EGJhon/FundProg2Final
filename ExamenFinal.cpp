@@ -49,7 +49,7 @@ void mostrarProductoEnCuadro(producto prod, int fila);
 void mostrarProductostock(producto prod, int fila,int col);
 void mostrafueraestock();
 void interfazingre(int *id,int *cant);
-void interfazadmininv();
+bool interfazadmininv();
 void interfazeliminar(int *id);
 //###################Saidh#######################
 
@@ -269,7 +269,7 @@ void mostrarProductostock(producto prod, int fila,int col) {
     cout << prod.stockmin;
 }
 
-void interfazadmininv(){
+bool interfazadmininv(){
     int opc;
     do{
     	system("cls");
@@ -285,13 +285,14 @@ void interfazadmininv(){
         cout<<"            3. ingresar producto nuevo"<<endl;
         cout<<"            4. mostra productos que no superan el stock minimo"<<endl;
         cout<<"            5. eliminar producto"<<endl;
-        cout<<"            6. salir"<<endl;
+        cout<<"            6. volver a menu"<<endl;                
+        cout<<"            7. salir"<<endl;
         cout<<endl;
         cout<<"========================================================================"<<endl;
         do{
             cout<<"ingresa la opcion: ";
             cin>>opc;
-        }while(opc>6);
+        }while(opc>7);
         switch(opc){
             case 1:
                     mostrarinv("INVENTARIO");
@@ -317,10 +318,14 @@ void interfazadmininv(){
             		eliminarinv(id);
             		system("pause");
             		break;
-            default:
+            case 6:
+                    return true;
+            		break;
+            case 7:
+                    return false;
                     break;
         }
-    }while(opc!=6);  
+    }while(opc!=6 || opc!=7  );  
 
 }
 
@@ -346,3 +351,36 @@ void interfazeliminar(int *id){
     	cout<<"ingresa el ID del producto:"<<endl;
     	cin>>*id;
 }
+
+void menu(){
+       int opc;
+       bool salir;
+    do{
+    	system("cls");
+        cout<<"========================================================================"<<endl;
+        cout<<endl;
+        cout<<"               .:administracion de invetario:."<<endl;
+        cout<<endl;
+        cout<<"========================================================================"<<endl;
+        cout<<endl;
+        cout<<endl;
+        cout<<"            1. adminitrar inventario"<<endl;
+        cout<<"            2. venta de producto"<<endl;               
+        cout<<"            3. salir"<<endl;
+        cout<<endl;
+        cout<<"========================================================================"<<endl;
+        do{
+            cout<<"ingresa la opcion: ";
+            cin>>opc;
+        }while(opc>3);
+        switch(opc){
+            case 1:
+                    salir=interfazadmininv();
+                    break;
+            case 2:
+            		
+                    break;
+        }
+    }while(opc!=3 && !salir  );   
+}
+
