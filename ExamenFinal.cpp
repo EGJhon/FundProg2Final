@@ -1,6 +1,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
+#include <iomanip> //para una funcion que estoy utilizando
+#include <windows.h>//es para gotoxy
 
 using namespace std;
 
@@ -27,17 +29,32 @@ typedef struct enlace{
 
 #define tamListapro sizeof(listapro)
 
+// funcion gotoxy()
+void gotoxy(int x, int y) {
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
 // prototipos
-void inicio();
-void crearusr();
-void submenuventa();
-void submenuproduc();
-void menu();
-void ingresarinv();
+//################JHON#######################
+void mostrarMensaje(string mensaje);
+void ingresarnuvinv();
 void mostrarinv();
-void mostrarprod();
-void vender();
-void voleta(listapro *venta);
+void eliminarinv(int id);
+void ingresarinv(int id,int cant);
+bool existeinv(int id);
+void mostrarProductoEnCuadro(producto prod, int fila);
+void mostrarProductostock(producto prod, int fila,int col);
+void mostrafueraestock();
+void interfazingre(int *id,int *cant);
+void interfazadmininv();
+void interfazeliminar(int *id);
+//###################Saidh#######################
+
+//##################kevin########################
+
 
 // creacion de punteros archivo como global
 FILE *archivo;
@@ -48,13 +65,26 @@ int main(){
     return 0;
 }
 
-void ingresarinv(){
-    string var;
-    archivo=open("Data.prod","a+b");
+
+
+//########################### Jhon #############################
+
+void ingresarnuvinv(){
+    char var[30];
+    archivo=fopen("Data.prod","a+b");
     producto prod;
     do{
-        cout<<"ingresa el ID del producto: ";
-        cin>>prod.id;
+    	system("cls");
+    	cout<<"========================================================================"<<endl;
+        cout<<endl;
+        cout<<"               .:ingresar nuevo productos:."<<endl;
+        cout<<endl;
+        cout<<"========================================================================"<<endl;
+        cout<<endl;
+        do{
+	        cout<<"ingresa el ID del producto: ";
+	        cin>>prod.id;
+		}while(existeinv(prod.id));
         cout<<"ingresa nombre del producto: ";
         cin>>var;
         strcpy(prod.nombre,var);
@@ -66,116 +96,253 @@ void ingresarinv(){
         cin>>prod.stock;
         cout<<"ingresa el stock minimo del producto: ";
         cin>>prod.stockmin;
-        fwrite(&prod,sizeof(produc),1,archivo);
+        fwrite(&prod,sizeof(prod),1,archivo);
         cout<<"\ndesea seguir ingresando productos (s/n): ";
         cin>>var;
     }while(strcmp(var,"n")!=0);
-}
-void crearusr(){
-    bool Acceso;
-    char pass[6],nomb[15];
-    usuario usr[];
-    int id;
-    usuarios = open("usuario.usr","a+b");
-    
-}
-void inicio(){
-    bool Acceso;
-    char pass[6],nomb[15];
-    usuario usr[];
-    int id;
-    usuarios = open("usuario.usr","rb");
-    
+    fclose(archivo);
+	
 }
 
-void menu(){
-    int opc;
-    do{
-        cout<<"=========================================================================="<<endl;
-        cout<<endl;
-        cout<<"               .:MENU:."<<endl;
-        cout<<endl;
-        cout<<"            1. administracion"<<endl;
-        cout<<"            2. venta"<<endl;
-        cout<<"            3. salir"
-        cout<<endl;
-        cout<<"=========================================================================="<<endl;
-        do{
-            cout<<"ingresa la opcion: ";
-            cin>>opc;
-        }while(opc>3);
-        switch(opc){
-            case 1:
-                    submenuadmin();
-                    break;
-            case 2:
-                    submenuventa();
-                    break;
-            default:
-                    break;
-        }
-    }while(opc!=3);
-    
+void ingresarinv(int id,int cant){
+    FILE *temp;
+    if(existeinv(id)){
+    	archivo=fopen("Data.prod","a+b");
+    	temp=fopen("temp","w+b");
+    	producto prod;
+    	fseek(archivo,0,0);
+    	while (fread(&prod,sizeof(prod),1,archivo)!=0){
+	        if(prod.id != id)
+	            fwrite(&prod,sizeof(prod),1,temp);
+	        else{
+	        	cout<<"el stock anterio era: "<<prod.stock<<endl;
+	            prod.stock+=cant;
+	            cout<<"el stock actual es: "<<prod.stock<<endl;
+	            fwrite(&prod,sizeof(prod),1,temp);
+	        }
+	   	}
+	   	fclose(archivo);
+	    fclose(temp);
+	    remove("Data.prod");
+	    rename("temp", "Data.prod");
+	    //return true;
+	}
+   	else{
+   		mostrarMensaje("este id no existe en el archivo, es nuevo");
+		//return false;	
+	}
 }
 
-void submenuproduc(){
+void eliminarinv(int id){
+	FILE *temp;
+    if(existeinv(id)){
+    	archivo=fopen("Data.prod","a+b");
+    	temp=fopen("temp","w+b");
+    	producto prod;
+    	fseek(archivo,0,0);
+    	while (fread(&prod,sizeof(prod),1,archivo)!=0){
+	        if(prod.id != id)
+	            fwrite(&prod,sizeof(prod),1,temp);
+	   	}
+	   	fclose(archivo);
+	    fclose(temp);
+	    remove("Data.prod");
+	    rename("temp", "Data.prod");
+	    mostrarMensaje("el producto a sido eliminado");
+	}
+   	else{
+   		mostrarMensaje("este id no existe en el archivo, es nuevo");
+	}
+}
+
+void mostrarinv(string msg){
+    FILE *temp;
+    producto prod;
+    temp=fopen("Data.prod","r+b");
+    system("cls");
+    int filaI=1;
+    gotoxy(5,filaI);
+    	cout<<"========================================================================"<<endl;
+    gotoxy(5,filaI+1);
+        cout<<"               		.:"<<msg<<":."<<endl;
+    gotoxy(5,filaI+2);
+        cout<<"========================================================================"<<endl;
+    gotoxy(5, filaI+4);
+    cout << " ID      Nombre      Costo    Precio   Stock   Stock Min" << endl;
+    gotoxy(5, filaI+5);
+    cout << "----------------------------------------------------------" << endl;
+    while (fread(&prod,sizeof(prod),1,temp)!=0){
+		mostrarProductoEnCuadro(prod, filaI+6);
+		filaI+=2;
+    }
+    fclose(temp);
+    gotoxy(0, filaI+6);
+}
+
+bool existeinv(int id){
+    FILE *temp;
+    temp=fopen("Data.prod","r+b");
+    producto prod;
+    fseek(archivo,0,0);
+    bool resul=false;
+    while (fread(&prod,sizeof(prod),1,temp)!=0){
+        if(prod.id == id)
+			resul = true;
+    }
+    fclose(temp);
+    return resul;
+}
+
+void mostrarProductoEnCuadro(producto prod, int fila) {
+    gotoxy(5, fila);
+    cout << prod.id;
+
+    gotoxy(12, fila);
+    cout << prod.nombre;
+
+    gotoxy(26, fila);
+    cout << prod.costo;
+
+    gotoxy(35, fila);
+    cout << prod.precio;
+
+    gotoxy(45, fila);
+    cout << prod.stock;
+
+    gotoxy(55, fila);
+    cout << prod.stockmin;
+}
+
+void mostrarMensaje(string mensaje) {
+    int longitud = mensaje.length();
+    int espacioDisponible = 70; 
+    int espaciosIzquierda = (espacioDisponible - longitud) / 2;
+    for (int i = 0; i < espacioDisponible; ++i) {
+        cout << "=";
+    }
+    cout << endl;
+    cout << setw(espaciosIzquierda + longitud) << mensaje <<endl;
+    for (int i = 0; i < espacioDisponible; ++i) {
+        cout << "=";
+    }
+    cout << endl;
+}
+
+void mostrafueraestock(){
+	FILE *temp;
+    producto prod;
+    system("cls");
+    temp=fopen("Data.prod","r+b");
+   	int filaI=1;
+   	int col=10;
+    gotoxy(col,filaI);
+    	cout<<"========================================================================"<<endl;
+    gotoxy(col,filaI+1);
+        cout<<"           .:productos por debajo del Stock minimo:."<<endl;
+    gotoxy(col,filaI+2);
+        cout<<"========================================================================"<<endl;
+    gotoxy(col, filaI+4);
+    cout << " ID      Nombre     Stock   Stock Min" << endl;
+    gotoxy(col, filaI+5);
+    cout << "-----------------------------------------" << endl;
+    while (fread(&prod,sizeof(prod),1,temp)!=0){
+    	if(prod.stock<prod.stockmin){
+			mostrarProductostock(prod, filaI+6,col);
+			filaI+=2;
+    	}
+	}
+	fclose(archivo);
+    gotoxy(0, filaI+7);
+}
+
+void mostrarProductostock(producto prod, int fila,int col) {
+    gotoxy(col+1, fila);
+    cout << prod.id;
+
+    gotoxy(col+8, fila);
+    cout << prod.nombre;
+
+    gotoxy(col+20, fila);
+    cout << prod.stock;
+
+	gotoxy(col+30, fila);
+    cout << prod.stockmin;
+}
+
+void interfazadmininv(){
     int opc;
     do{
+    	system("cls");
         cout<<"========================================================================"<<endl;
         cout<<endl;
-        cout<<"               .:productos:."<<endl;
+        cout<<"               .:administracion de invetario:."<<endl;
+        cout<<endl;
+        cout<<"========================================================================"<<endl;
+        cout<<endl;
         cout<<endl;
         cout<<"            1. mostrar inventario"<<endl;
-        cout<<"            2. ingresar producto a invetario"<<endl;
-        cout<<"            3. mostra productos que no superan el stock minimo"<<endl;
-        cout<<"            4. salir"
+        cout<<"            2. ingresar producto existente"<<endl;
+        cout<<"            3. ingresar producto nuevo"<<endl;
+        cout<<"            4. mostra productos que no superan el stock minimo"<<endl;
+        cout<<"            5. eliminar producto"<<endl;
+        cout<<"            6. salir"<<endl;
         cout<<endl;
         cout<<"========================================================================"<<endl;
         do{
             cout<<"ingresa la opcion: ";
             cin>>opc;
-        }while(opc>3);
+        }while(opc>6);
         switch(opc){
             case 1:
-                    mostrarinv();
+                    mostrarinv("INVENTARIO");
+                    system("pause");
                     break;
             case 2:
-                    ingresarinv();
+            		int id,cant;
+            		interfazingre(&id,&cant);
+                    ingresarinv(id, cant);
+                    system("pause");
                     break;
             case 3:
-                    mostrarFStock();
+                    ingresarnuvinv();
+                    system("pause");
                     break;
+            case 4:
+            		mostrafueraestock();
+            		system("pause");
+            		break;
+            case 5:
+            		int id2;
+            		interfazeliminar(&id2);
+            		eliminarinv(id);
+            		system("pause");
+            		break;
             default:
                     break;
         }
-    }while(opc!=3);  
+    }while(opc!=6);  
+
 }
 
-void submenuventa(){
-    int opc;
-    do{
+void interfazingre(int *id,int *cant){
+		system("cls");
+    	cout<<endl;
+    	mostrarinv(" INGRESAR PRODUCTO ");
+    	cout<<endl;
+    	cout<<"ingresa el ID del producto:"<<endl;
+    	cin>>*id;
+    	cout<<"digita la cantidad que se ingresara:"<<endl;
+    	cin>>*cant;
+}
+
+void interfazeliminar(int *id){
+		system("cls");
+	    cout<<"========================================================================"<<endl;
+        cout<<endl;
+        cout<<"               .:eliminar producto:."<<endl;
+        cout<<endl;
         cout<<"========================================================================"<<endl;
-        cout<<endl;
-        cout<<"               .:venta:."<<endl;
-        cout<<endl;
-        cout<<"            1. mostrar productos"<<endl;
-        cout<<"            2. vender"<<endl;
-        cout<<"            3. salir"
-        cout<<endl;
-        cout<<"========================================================================"<<endl;
-        do{
-            cout<<"ingresa la opcion: ";
-            cin>>opc;
-        }while(opc>3);
-        switch(opc){
-            case 1:
-                    mostrarinv();
-                    break;
-            case 2:
-                    vender();
-                    break;
-            default:
-                    break;
-        }
-    }while(opc!=3);  
+    	cout<<endl;
+    	cout<<"ingresa el ID del producto:"<<endl;
+    	cin>>*id;
 }
