@@ -16,6 +16,7 @@ este aplicativo se desarrollara en el lenguage de programacion c++, se implentra
 - [x] funcion agregar nuevo producto a inv
 - [x] funcion agregar producto con id
 - [x] funcion mostrar productos que no superan el stock minimo
+- [x] funcion eleminar producto 
 #### Saidh(venta de producto)
 - [ ] funcion venta
 - [ ] funcion mostrar productos (se mostrara id, nombre, precio y stock)
