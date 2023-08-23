@@ -29,7 +29,7 @@ Este programa es una herramienta que desarrollamos para facilitar la gestión de
 - [x] interfaz de creacion de usuario 
 ### imagen de estructura del aplicativo
 
-<p align = "center"> <img src = "proyectoPROGfinal.jpeg" width = 100% height = 100%/></p>
+<p align = "center"> <img src = "proyectoPROGFinal.jpeg" width = 100% height = 100%/></p>
 
 <p align = "center"><img src = "https://scontent.flim15-2.fna.fbcdn.net/v/t1.6435-9/47188729_2163633760325440_4064688789019164672_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=9267fe&_nc_ohc=EU7ejhwao9sAX8vxdko&_nc_ht=scontent.flim15-2.fna&oh=00_AfBu1Ne1sG_xgLqt9iozUiohyE4Wm97J7NYRsmXvARm5tQ&oe=65061523" width = 50% height = 50% alt = "Descripción de imagen" align = "center" /></p>
 
