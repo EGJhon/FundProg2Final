@@ -1,7 +1,6 @@
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
-#include <iomanip> 
 #include <windows.h>
 #include <stdlib.h>
 #include <chrono>
@@ -60,8 +59,8 @@ bool menuventas();
 void mostrarinvVenta(string msg);
 void mostrarProductoEnCuadroventa(producto prod, int fila);
 void interfazventa(Listapro *&lisp,int *cont);
-void voleta(Listapro *lisp);
-float mostrarvoletacuadro(producto prod, int fila,int col,int cant);
+void Boleta(Listapro *lisp);
+float mostrarBoletacuadro(producto prod, int fila,int col,int cant);
 producto buscar(int id);
 void venderprod(int id,int cant);
 string tiempo();
@@ -84,8 +83,8 @@ int main(){
     SMALL_RECT rect;
     COORD coord;
 
-    coord.X = 75; // Ancho de la ventana
-    coord.Y = 25; // Alto de la ventana
+    coord.X = 75; 
+    coord.Y = 25; 
 
     rect.Left = 0;
     rect.Top = 0;
@@ -253,16 +252,18 @@ void mostrarProductoEnCuadro(producto prod, int fila) {
 }
 
 void mostrarMensaje(string mensaje) {
+    system("cls");
     system("color 84");
-    int longitud = mensaje.length();
-    int espacioDisponible = 70; 
-    int espaciosIzquierda = (espacioDisponible - longitud) / 2;
-    for (int i = 0; i < espacioDisponible; ++i) {
+    int logmen = mensaje.length();
+    int anchoP = 75; 
+    int espaciosIzquierda = (anchoP - logmen) / 2;
+    for (int i = 0; i < anchoP; ++i) {
         cout << "=";
     }
     cout << endl;
-    cout << setw(espaciosIzquierda + longitud) << mensaje <<endl;
-    for (int i = 0; i < espacioDisponible; ++i) {
+    gotoxy(espaciosIzquierda,1);
+    cout<< mensaje <<endl;
+    for (int i = 0; i < anchoP; ++i) {
         cout << "=";
     }
     cout << endl;
@@ -314,6 +315,7 @@ void mostrarProductostock(producto prod, int fila,int col) {
 bool interfazadmininv(){
     int opc;
     do{
+        do{
     	system("cls");
         cout<<"========================================================================"<<endl;
         cout<<endl;
@@ -331,7 +333,6 @@ bool interfazadmininv(){
         cout<<"            7. salir"<<endl;
         cout<<endl;
         cout<<"========================================================================"<<endl;
-        do{
             cout<<"ingresa la opcion: ";
             cin>>opc;
         }while(opc>7);
@@ -344,7 +345,6 @@ bool interfazadmininv(){
             		int id,cant;
             		interfazingre(&id,&cant);
                     ingresarinv(id, cant);
-                    //system("pause");
                     break;
             case 3:
                     ingresarnuvinv();
@@ -358,7 +358,6 @@ bool interfazadmininv(){
             		int id2;
             		interfazeliminar(&id2);
             		eliminarinv(id2);
-            		//system("pause");
             		break;
             case 6:
                     return false;
@@ -395,6 +394,7 @@ void menu(int id,string nomusr){
        int opc;
        bool salir;
     do{
+        do{
     	system("cls");
         cout<<"========================================================================"<<endl;
         cout<<endl;
@@ -408,7 +408,6 @@ void menu(int id,string nomusr){
         cout<<"             3. salir"<<endl;
         cout<<endl;
         cout<<"========================================================================"<<endl;
-        do{
             cout<<"ingresa la opcion: ";
             cin>>opc;
         }while(opc>3);
@@ -443,7 +442,7 @@ bool menuventas(){
         cout<<"            3. volver al menu"<<endl;
         cout<<"            4. salir"<<endl;
 		if(cont>0){
-            cout<<"            5. mostrar voleta"<<endl;
+            cout<<"            5. mostrar Boleta"<<endl;
         }
         cout<<endl;
         cout<<"========================================================================"<<endl;
@@ -467,7 +466,7 @@ bool menuventas(){
                     break;
             case 5:
             		
-					voleta(lisp);
+					Boleta(lisp);
                     system("pause");
                     lisp=nullptr;
                     cont=0;
@@ -567,7 +566,7 @@ void interfazventa(Listapro *&lisp,int *cont){
     }while(opc!='n');
 }
 
-void voleta(Listapro *lisp){
+void Boleta(Listapro *lisp){
     Listapro *q;
     producto prod;
     int filaI=1;
@@ -577,7 +576,7 @@ void voleta(Listapro *lisp){
     gotoxy(5,filaI);
     	cout<<"========================================================================"<<endl;
     gotoxy(5,filaI+1);
-        cout<<"               		.: VOLETA :."<<endl;
+        cout<<"               		.: BOLETA :."<<endl;
     gotoxy(5,filaI+2);
         cout<<"========================================================================"<<endl;
     cout<<"ingrese nombre de cliente: ";
@@ -589,7 +588,7 @@ void voleta(Listapro *lisp){
     gotoxy(5,filaI);
     	cout<<"========================================================================"<<endl;
     gotoxy(5,filaI+1);
-        cout<<"              .: VOLETA     FERRETEIA TUERCA Y TORNILLO:."<<endl;
+        cout<<"              .: BOLETA     FERRETEIA TUERCA Y TORNILLO:."<<endl;
     gotoxy(5,filaI+2);
         cout<<"========================================================================"<<endl;
     gotoxy(5,filaI+3);
@@ -608,7 +607,7 @@ void voleta(Listapro *lisp){
     float pago=0;
     while (q!=nullptr){
         prod=buscar(q->idPro);
-		pago+=mostrarvoletacuadro(prod, (filaI+8) , 5,q->cant);
+		pago+=mostrarBoletacuadro(prod, (filaI+8) , 5,q->cant);
 		filaI+=2;
         q=q->sig;
     }
@@ -617,7 +616,7 @@ void voleta(Listapro *lisp){
     gotoxy(-5, filaI+10);
 }
 
-float mostrarvoletacuadro(producto prod, int fila,int col,int cant) {
+float mostrarBoletacuadro(producto prod, int fila,int col,int cant) {
     gotoxy(col+1, fila);
     cout << prod.id;
 
