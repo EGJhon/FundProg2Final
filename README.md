@@ -1,6 +1,10 @@
 # FundProg2Final
-
 <br> 
+
+#### Equipo:
+- Estrada Gutierrez Jhon
+- Morales Honores Saidh
+- Poma Crispin Dayana
 
 ## **Aplicativo por terminal para Ferreteria**
 Este programa es una herramienta que desarrollamos para facilitar la gestión de inventario y ventas en un negocio de Ferreteria en el lenguage c++, aplicando lo aprendido en clase como listas dinamicas, manipulacion de archivo y estructuras.
@@ -26,7 +30,8 @@ Este programa es una herramienta que desarrollamos para facilitar la gestión de
 - [x] funcion ingresar
 - [x] interfaz de peticion de contraseña de admin
 - [x] intrefaz de ingreso de id y contraseña
-- [x] interfaz de creacion de usuario 
+- [x] interfaz de creacion de usuario
+
 ### imagen de estructura del aplicativo
 
 <p align = "center"> <img src = "proyectoPROGFinal2.jpeg" width = 100% height = 100%/></p>
